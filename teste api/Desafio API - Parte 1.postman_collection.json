@@ -58,6 +58,9 @@
 							"var resposta = pm.response.json();",
 							"var nomeUsuario = pm.environment.get(\"nomeUsuario\");",
 							"",
+							"// Salva o userID no ambiente",
+							"pm.environment.set(\"userID\", resposta.userID); ",
+							"",
 							"// Testes",
 							"pm.test(\"Validar Código de Resposta == 201\", function () {",
 							"    pm.response.to.have.status(201);",
@@ -100,9 +103,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{url}}/User",
+					"raw": "{{urlUsuario}}/User",
 					"host": [
-						"{{url}}"
+						"{{urlUsuario}}"
 					],
 					"path": [
 						"User"
@@ -176,9 +179,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{url}}/GenerateToken",
+					"raw": "{{urlUsuario}}/GenerateToken",
 					"host": [
-						"{{url}}"
+						"{{urlUsuario}}"
 					],
 					"path": [
 						"GenerateToken"
@@ -237,12 +240,228 @@
 					}
 				},
 				"url": {
-					"raw": "{{url}}/Authorized",
+					"raw": "{{urlUsuario}}/Authorized",
 					"host": [
-						"{{url}}"
+						"{{urlUsuario}}"
 					],
 					"path": [
 						"Authorized"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "listarLivros",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resposta = pm.response.json();",
+							"",
+							"pm.environment.set('livroUm', resposta.books[0].isbn);",
+							"pm.environment.set('livroDois', resposta.books[1].isbn);",
+							"",
+							"// Testes",
+							"pm.test(\"Validar Código de Resposta == 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Validar se o json possui os campos isbn, title, subTitle, author, publish_date, publisher, pages, description e website\", function () {    ",
+							"    pm.expect(resposta).to.be.an('object');",
+							"    pm.expect(resposta.books[0].isbn).to.exist.and.to.be.a('string');",
+							"    pm.expect(resposta.books[0].title).to.exist.and.to.be.string;",
+							"    pm.expect(resposta.books[0].subTitle).to.exist.to.be.string;",
+							"    pm.expect(resposta.books[0].author).to.exist.to.be.string;",
+							"    pm.expect(resposta.books[0].publish_date).to.exist.to.be.string;",
+							"    pm.expect(resposta.books[0].publisher).to.exist;",
+							"    pm.expect(resposta.books[0].pages).to.exist;",
+							"    pm.expect(resposta.books[0].description).to.exist.to.be.string;",
+							"    pm.expect(resposta.books[0].website).to.exist.to.be.string;",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{urlLivros}}/Books",
+					"host": [
+						"{{urlLivros}}"
+					],
+					"path": [
+						"Books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "alugarLivros",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resposta = pm.response.json();",
+							"",
+							"pm.environment.set('livroUm', resposta.books[0].isbn);",
+							"pm.environment.set('livroDois', resposta.books[1].isbn);",
+							"",
+							"// Testes",
+							"pm.test(\"Validar Código de Resposta == 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Validar se o json possui isbn\", function () {    ",
+							"    pm.expect(resposta).to.be.an('object');",
+							"    pm.expect(resposta.books[0].isbn).to.exist.and.to.be.a('string');",
+							"    pm.expect(resposta.books[1].isbn).to.exist.and.to.be.a('string');",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"{{userID}}\",\n  \"collectionOfIsbns\": [\n    {\"isbn\": \"{{livroUm}}\"},\n    {\"isbn\": \"{{livroDois}}\"}\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{urlLivros}}/Books",
+					"host": [
+						"{{urlLivros}}"
+					],
+					"path": [
+						"Books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "listarDetalheUsuario",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resposta = pm.response.json();",
+							"",
+							"var nomeUsuario = pm.environment.get(\"nomeUsuario\");",
+							"var userID = pm.environment.get(\"userID\");",
+							"",
+							"// Testes",
+							"pm.test(\"Validar Código de Resposta == 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Validar se o ID do usuário está correto\", function () {",
+							"    pm.expect(resposta.userId).to.eql(userID);",
+							"})",
+							"",
+							"pm.test(\"Validar se o usuário está correto\", function () {",
+							"    pm.expect(resposta.username).to.eql(nomeUsuario);",
+							"})",
+							"",
+							"pm.test(\"Validar o usuário possui livros\", function () {    ",
+							"    pm.expect(resposta.books[0].isbn).to.exist;",
+							"    pm.expect(resposta.books[1].isbn).to.exist;",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{urlUsuario}}/User/{{userID}}",
+					"host": [
+						"{{urlUsuario}}"
+					],
+					"path": [
+						"User",
+						"{{userID}}"
 					]
 				}
 			},
