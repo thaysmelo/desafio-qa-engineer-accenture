@@ -1,0 +1,252 @@
+{
+	"info": {
+		"_postman_id": "8038e92c-ba81-4ab2-b454-847c9ccf9756",
+		"name": "Desafio API - Parte 1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44202516",
+		"_collection_link": "https://thaysmelo-7456056.postman.co/workspace/Thays-Melo's-Workspace~1044ce85-8aaa-4f01-8acd-6a9267b881b6/collection/44202516-8038e92c-ba81-4ab2-b454-847c9ccf9756?action=share&source=collection_link&creator=44202516"
+	},
+	"item": [
+		{
+			"name": "criarUsuario",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Função gerar um nome aleatório",
+							"function gerarNomeUsuario() {",
+							"    const letras = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';",
+							"    let nomeUsuario = 'Usuário ';",
+							"    for (let i = 0; i < 6; i++) {",
+							"        nomeUsuario += letras.charAt(Math.floor(Math.random() * letras.length));",
+							"    }",
+							"    return nomeUsuario;",
+							"}",
+							"",
+							"// Função gerar uma senha aleatória",
+							"function gerarSenhaAleatoria() {",
+							"    const letras = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';",
+							"    const numeros = '0123456789';",
+							"    const caractere_especial = '!@#$%';",
+							"    let senha = '';",
+							"    for (let i = 0; i < 6; i++) {",
+							"        senha += letras.charAt(Math.floor(Math.random() * letras.length));",
+							"    }",
+							"    senha += numeros.charAt(Math.floor(Math.random() * numeros.length));",
+							"    senha += caractere_especial.charAt(Math.floor(Math.random() * caractere_especial.length));",
+							"    return senha;",
+							"}",
+							"",
+							"// Criando uma senha",
+							"const senhaAleatoria = gerarSenhaAleatoria();",
+							"const nomeAleatorio = gerarNomeUsuario();",
+							"",
+							"// Armazenando em variável de ambiente",
+							"pm.environment.set(\"password\", senhaAleatoria);",
+							"pm.environment.set(\"nomeUsuario\", nomeAleatorio);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resposta = pm.response.json();",
+							"var nomeUsuario = pm.environment.get(\"nomeUsuario\");",
+							"",
+							"// Testes",
+							"pm.test(\"Validar Código de Resposta == 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Validar se o json possui os campos userID, username, e books\", function () {    ",
+							"    pm.expect(resposta).to.be.an('object');",
+							"    pm.expect(resposta.userID).to.exist;",
+							"    pm.expect(resposta.username).to.exist;",
+							"    pm.expect(resposta.books).to.exist;",
+							"});",
+							"",
+							"pm.test(\"Validar nome do usuário\", function () {",
+							"  pm.expect(resposta.username).equals(nomeUsuario);",
+							"});",
+							"",
+							"pm.test(\"Validar se o campo de livro está vazio\", function () {",
+							"    pm.expect(resposta.books).to.exist.and.to.be.an('array').that.is.empty;",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userName\": \"{{nomeUsuario}}\",\n  \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/User",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"User"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "gerarTokenAcesso",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resposta = pm.response.json();",
+							"",
+							"pm.environment.set(\"token\", resposta.token);",
+							"",
+							"",
+							"// Testes",
+							"pm.test(\"Validar Código de Resposta == 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Validar se o json possui os campos token, expires, status e result\", function () {    ",
+							"    pm.expect(resposta).to.be.an('object');",
+							"    pm.expect(resposta.token).to.exist;",
+							"    pm.expect(resposta.expires).to.exist;",
+							"    pm.expect(resposta.status).to.exist;",
+							"    pm.expect(resposta.result).to.exist;",
+							"});",
+							"",
+							"pm.test(\"Validar se o status é 'Success'\", function () {",
+							"    pm.expect(resposta.status).to.eql('Success');",
+							"});",
+							"",
+							"pm.test(\"Validar se o result é 'User authorized successfully.'\", function () {",
+							"    pm.expect(resposta.result).to.eql('User authorized successfully.');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userName\": \"{{nomeUsuario}}\",\n  \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/GenerateToken",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"GenerateToken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "confirmarUsuarioAutorizado",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resposta = pm.response.json();",
+							"",
+							"",
+							"// Testes",
+							"pm.test(\"Validar Código de Resposta == 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Validar se o retorno é true', function () {",
+							"    pm.expect(resposta).to.eql(true);",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userName\": \"{{nomeUsuario}}\",\n  \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/Authorized",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"Authorized"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
