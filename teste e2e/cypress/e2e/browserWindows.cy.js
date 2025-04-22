@@ -6,9 +6,13 @@ describe('Testes relacionados a janela do menu browser', () => {
         cy.visit(Cypress.config('baseUrl'));
     });
 
-    it('Testar abrir uma nova janela no browser windows', () => {
+    it('Teste para abrir uma nova janela no browser windows', () => {
         browserWindowsPage.goToBrowserWindowsByClick();
         browserWindowsPage.clickBrowserWindows();
-       
+        browserWindowsPage.assertNewWindowButtonIsVisible();
+
+        browserWindowsPage.openNewWindow();
+        browserWindowsPage.assertNewWindowContent('This is a sample page');
+        browserWindowsPage.closeNewWindow();        
     });
 });
