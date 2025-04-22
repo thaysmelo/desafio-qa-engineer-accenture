@@ -9,7 +9,7 @@ describe('Submeter formulario', () => {
         cy.clearLocalStorage();
     });
 
-    it('Deve acessar o formulário de prática', () => {
+    it('Submeter o Practice Form', () => {
         practiceFormPage.openPracticeForm();
         practiceFormPage.assertUrlPracticeForm('Practice Form', '/automation-practice-form');
         practiceFormPage.typeFirstName('Thays');
