@@ -1,5 +1,7 @@
 class PracticeFormPage {
     elements = {
+        formButton: () => cy.get('.card-body').contains('Form'),
+        practiceFormButton: () => cy.get(':nth-child(2) > .element-list > .menu-list > #item-0'),
         firstName: () => cy.get('#firstName'),
         lastName: () => cy.get('#lastName'),
         email: () => cy.get('#userEmail'),
@@ -22,7 +24,10 @@ class PracticeFormPage {
     }
 
     openPracticeForm() {
-        cy.visit('/automation-practice-form');
+        this.elements.formButton().should('be.visible').click();
+        this.elements.practiceFormButton().should('be.visible').click();
+        cy.url().should('include', '/automation-practice-form');
+
     }
 
     assertUrlPracticeForm(title, url) {
