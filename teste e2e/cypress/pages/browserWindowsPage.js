@@ -6,10 +6,6 @@ class BrowserWindowsPage {
         newWindow: () => cy.get('#window'),
     }
 
-    goToBrowserWindowsByUrl() {
-        cy.visit('/browser-windows');
-    }
-
     goToBrowserWindowsByClick() {
         this.elements.accessBrowserWindowsMenu().click();
     }
@@ -31,9 +27,9 @@ class BrowserWindowsPage {
 
     assertNewWindowContent(message) {
         cy.get('@windowOpen').then((stub) => {
-            const url = stub.getCall(0).args[0]; // agora sim!
+            const url = stub.getCall(0).args[0];
             expect(url).to.contain('/sample');
-            cy.visit(url); // visita a nova janela no mesmo contexto
+            cy.visit(url);
             cy.contains(message).should('be.visible');
         });
     }

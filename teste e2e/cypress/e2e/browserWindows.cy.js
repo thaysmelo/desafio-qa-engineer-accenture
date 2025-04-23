@@ -1,6 +1,6 @@
 import browserWindowsPage from "../pages/browserWindowsPage";
 
-describe('Testes relacionados a janela do menu browser', () => {
+describe('Testes relacionados a janela do menu browser windows', () => {
 
     beforeEach(() => {
         cy.visit(Cypress.config('baseUrl'));
@@ -13,6 +13,6 @@ describe('Testes relacionados a janela do menu browser', () => {
 
         browserWindowsPage.openNewWindow();
         browserWindowsPage.assertNewWindowContent('This is a sample page');
-        browserWindowsPage.closeNewWindow();        
+        browserWindowsPage.closeNewWindow();
     });
 });
